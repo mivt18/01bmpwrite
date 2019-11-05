@@ -4,6 +4,8 @@
 #include <cmath>
 #include <windows.h>
 
+//vcherrr начала работу(?)
+
 int N, M, color;
 
 void fillheader(char header[]) {
