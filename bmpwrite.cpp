@@ -4,6 +4,8 @@
 #include <cmath>
 #include <windows.h>
 
+//comment Anisimov
+
 int N, M, color;
 
 void fillheader(char header[]) {
