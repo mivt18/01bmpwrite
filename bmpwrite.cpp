@@ -38,20 +38,39 @@ void fillpalette(char palette[]) {
     if (color == 2) return;
     // если чб, надо заполнять palette байтами
     // 0 0 0 0 1 1 1 0 2 2 2 0 3 3 3 0 ... 255 255 255 0
+	for (int i = 0; i < 256; i+=4) {
+		palette[i] = i/4;
+		palette[i+1] = i/4;
+		palette[i+2] = i/4;
+		palette[i+3] = 0;
+	}
 }
 
 void filldata(char data[], int **r, int **g, int **b) {
-    int i, j, linesize;
+	int bpp = color ? 3 : 1;
+    int i, j, linesize = ceil(bpp * N / 4.0) * 4;
     // заполнить данные.
     // учесть: записывать снизу вверх, в цветном файле порядок b, g, r
     // в случае чб есть только b
+	for (i = M-1; i >= 0; i--) {
+		for (j = 0; j < N; j++) {
+			data[i*linesize + j*bpp] = b[M-1-i][j];
+			if (color) {
+				data[i*linesize + j*bpp + 1] = g[M-1-i][j];
+				data[i*linesize + j*bpp + 2] = r[M-1-i][j];
+			}
+		}
+		for (j = linesize - 1; j > linesize - N*bpp; i--) {
+			data[i*linesize + j] = 0;
+		}
+	}
 }
 
 int main(char argc, char* argv[]) {
     int i, j, **r=0, **g=0, **b=0;
     std::ifstream f;
     char *filename; 
-    if (argc > 1) filename = argv[1]; else filename = "input.txt";
+    if (argc > 1) filename = argv[1]; else filename = "inputcolor.txt";
     f = std::ifstream(filename);
     if (f.fail()) {
         std::cerr << "could not open file\n";
@@ -84,7 +103,7 @@ int main(char argc, char* argv[]) {
     char header[54];
     char palette[4 * 256];
 
-    datasize = color ? M * ceil(3 * N / 4.0) * 4 : 1;   // !!!!!!! размер пиксельных данных, чтобы размер строки был кратен 4 байтам
+    datasize = color ? M * ceil(3 * N / 4.0) * 4 : M * ceil(N / 4.0) * 4;   // !!!!!!! размер пиксельных данных, чтобы размер строки был кратен 4 байтам
                                                             // исправить для чб случая, сейчас заглушка в виде 1.
     char* data = new char[datasize];
 
