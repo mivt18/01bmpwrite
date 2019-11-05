@@ -4,6 +4,8 @@
 #include <cmath>
 #include <windows.h>
 
+//Buldakov start working
+
 int N, M, color;
 
 void fillheader(char header[]) {
