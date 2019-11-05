@@ -3,6 +3,7 @@
 #include <cstring>
 #include <cmath>
 #include <windows.h>
+// Сысолятин начал работу
 
 int N, M, color;
 
