@@ -4,6 +4,7 @@
 #include <cmath>
 #include <windows.h>
 
+// Protopopov start to work
 int N, M, color;
 
 void fillheader(char header[]) {
