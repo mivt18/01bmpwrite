@@ -4,6 +4,8 @@
 #include <cmath>
 #include <windows.h>
 
+//start
+
 int N, M, color;
 
 void fillheader(char header[]) {
