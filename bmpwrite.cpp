@@ -6,7 +6,7 @@
 
 // Пахомов Александр начал работу
 
-int N, M, color;
+int N, M, color, datasize;
 
 void fillheader(char header[]) {
     int filesize;
@@ -16,10 +16,11 @@ void fillheader(char header[]) {
     ZeroMemory(&bfh, sizeof(bfh));
     
     bfh.bfType = 0x4d42;                        // сигнатура, должно быть 'BM'
-    bfh.bfSize = 54;                            // исправить размер файла
+
     bfh.bfReserved1 = 0;                        //
     bfh.bfReserved2 = 0;                        //
-    bfh.bfOffBits = color ? 54 + 256*4 : 54;    // начало пиксельных данных, чб добавляет размер палитры
+    bfh.bfOffBits = color ? 54 : 54 + 256*4;    // начало пиксельных данных, чб добавляет размер палитры
+	bfh.bfSize = bfh.bfOffBits + datasize;                            // исправить размер файла
     memcpy(header, &bfh, 14);                   // копируем в массив header
 
     // BITMAPINFOHEADER;
