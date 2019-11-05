@@ -4,8 +4,8 @@
 #include <cmath>
 #include <windows.h>
 
-//comment zhang
-int N, M, color;
+//comment rainber
+int N, M, color,datasize;
 
 void fillheader(char header[]) {
     int filesize;
@@ -14,36 +14,38 @@ void fillheader(char header[]) {
     BITMAPFILEHEADER bfh;
     ZeroMemory(&bfh, sizeof(bfh));
     
-    bfh.bfType = 0x4d42;                        // сигнатура, должно быть 'BM'
-    bfh.bfSize = 54;                            // исправить размер файла
+    bfh.bfType = 0x4d42;                        // СЃРёРіРЅР°С‚СѓСЂР°, РґРѕР»Р¶РЅРѕ Р±С‹С‚СЊ 'BM'
+    //bfh.bfSize = 54;                            // РёСЃРїСЂР°РІРёС‚СЊ СЂР°Р·РјРµСЂ С„Р°Р№Р»Р°
     bfh.bfReserved1 = 0;                        //
     bfh.bfReserved2 = 0;                        //
-    bfh.bfOffBits = color ? 54 + 256*4 : 54;    // начало пиксельных данных, чб добавляет размер палитры
-    memcpy(header, &bfh, 14);                   // копируем в массив header
+    //bfh.bfOffBits = color ? 54 + 256*4 : 54;    // РЅР°С‡Р°Р»Рѕ РїРёРєСЃРµР»СЊРЅС‹С… РґР°РЅРЅС‹С…, С‡Р± РґРѕР±Р°РІР»СЏРµС‚ СЂР°Р·РјРµСЂ РїР°Р»РёС‚СЂС‹
+	bfh.bfOffBits = color ? 54 : 54 + 256*4;    // РЅР°С‡Р°Р»Рѕ РїРёРєСЃРµР»СЊРЅС‹С… РґР°РЅРЅС‹С…, С‡Р± РґРѕР±Р°РІР»СЏРµС‚ СЂР°Р·РјРµСЂ РїР°Р»РёС‚СЂС‹
+    bfh.bfSize = bfh.bfOffBits + datasize;                            // РёСЃРїСЂР°РІРёС‚СЊ СЂР°Р·РјРµСЂ С„Р°Р№Р»Р°
+	memcpy(header, &bfh, 14);                   // РєРѕРїРёСЂСѓРµРј РІ РјР°СЃСЃРёРІ header
 
     // BITMAPINFOHEADER;
     BITMAPINFOHEADER bih;
     ZeroMemory(&bih, 40);
 
-    bih.biSize = 40;                            // размер структуры BITMAPINFOHEADER
-    bih.biWidth = N;                            // ширина
-    bih.biHeight = M;                           // высота, положит означает что данные надо записывать снизу вверх
+    bih.biSize = 40;                            // СЂР°Р·РјРµСЂ СЃС‚СЂСѓРєС‚СѓСЂС‹ BITMAPINFOHEADER
+    bih.biWidth = N;                            // С€РёСЂРёРЅР°
+    bih.biHeight = M;                           // РІС‹СЃРѕС‚Р°, РїРѕР»РѕР¶РёС‚ РѕР·РЅР°С‡Р°РµС‚ С‡С‚Рѕ РґР°РЅРЅС‹Рµ РЅР°РґРѕ Р·Р°РїРёСЃС‹РІР°С‚СЊ СЃРЅРёР·Сѓ РІРІРµСЂС…
     bih.biPlanes = 1;                           //
-    bih.biBitCount = color ? 24 : 8;            // число бит на пиксель
-    memcpy(header + 14, &bih, 40);              // копируем в массив header
+    bih.biBitCount = color ? 24 : 8;            // С‡РёСЃР»Рѕ Р±РёС‚ РЅР° РїРёРєСЃРµР»СЊ
+    memcpy(header + 14, &bih, 40);              // РєРѕРїРёСЂСѓРµРј РІ РјР°СЃСЃРёРІ header
 }
 
 void fillpalette(char palette[]) {
     if (color == 2) return;
-    // если чб, надо заполнять palette байтами
+    // РµСЃР»Рё С‡Р±, РЅР°РґРѕ Р·Р°РїРѕР»РЅСЏС‚СЊ palette Р±Р°Р№С‚Р°РјРё
     // 0 0 0 0 1 1 1 0 2 2 2 0 3 3 3 0 ... 255 255 255 0
 }
 
 void filldata(char data[], int **r, int **g, int **b) {
     int i, j, linesize;
-    // заполнить данные.
-    // учесть: записывать снизу вверх, в цветном файле порядок b, g, r
-    // в случае чб есть только b
+    // Р·Р°РїРѕР»РЅРёС‚СЊ РґР°РЅРЅС‹Рµ.
+    // СѓС‡РµСЃС‚СЊ: Р·Р°РїРёСЃС‹РІР°С‚СЊ СЃРЅРёР·Сѓ РІРІРµСЂС…, РІ С†РІРµС‚РЅРѕРј С„Р°Р№Р»Рµ РїРѕСЂСЏРґРѕРє b, g, r
+    // РІ СЃР»СѓС‡Р°Рµ С‡Р± РµСЃС‚СЊ С‚РѕР»СЊРєРѕ b
 }
 
 int main(char argc, char* argv[]) {
@@ -59,7 +61,7 @@ int main(char argc, char* argv[]) {
 
     f >> N >> M >> color;
 
-    // выделяем память под один (для чб) или три (для цв) массива MxN 
+    // РІС‹РґРµР»СЏРµРј РїР°РјСЏС‚СЊ РїРѕРґ РѕРґРёРЅ (РґР»СЏ С‡Р±) РёР»Рё С‚СЂРё (РґР»СЏ С†РІ) РјР°СЃСЃРёРІР° MxN 
     b = new int*[M]; for (i = 0; i < M; i++) b[i] = new int[N];
     if (color) {
         g = new int*[M]; for (i = 0; i < M; i++) g[i] = new int[N];
@@ -83,19 +85,20 @@ int main(char argc, char* argv[]) {
     char header[54];
     char palette[4 * 256];
 
-    int datasize = color ? M * ceil(3 * N / 4.0) * 4 : 1;   // !!!!!!! размер пиксельных данных, чтобы размер строки был кратен 4 байтам
-                                                            // исправить для чб случая, сейчас заглушка в виде 1.
+    //int datasize = color ? M * ceil(3 * N / 4.0) * 4 : 1;   // !!!!!!! СЂР°Р·РјРµСЂ РїРёРєСЃРµР»СЊРЅС‹С… РґР°РЅРЅС‹С…, С‡С‚РѕР±С‹ СЂР°Р·РјРµСЂ СЃС‚СЂРѕРєРё Р±С‹Р» РєСЂР°С‚РµРЅ 4 Р±Р°Р№С‚Р°Рј
+    datasize = color ? M * ceil(3 * N / 4.0) * 4 : 1;   // !!!!!!! СЂР°Р·РјРµСЂ РїРёРєСЃРµР»СЊРЅС‹С… РґР°РЅРЅС‹С…, С‡С‚РѕР±С‹ СЂР°Р·РјРµСЂ СЃС‚СЂРѕРєРё Р±С‹Р» РєСЂР°С‚РµРЅ 4 Р±Р°Р№С‚Р°Рј
+                                                            // РёСЃРїСЂР°РІРёС‚СЊ РґР»СЏ С‡Р± СЃР»СѓС‡Р°СЏ, СЃРµР№С‡Р°СЃ Р·Р°РіР»СѓС€РєР° РІ РІРёРґРµ 1.
     char* data = new char[datasize];
 
-    fillheader(header);         // заполнить заголовки
-    fillpalette(palette);       // заполнить палитру (если надо)
-    filldata(data, r, g, b);    // заполнить массив пиксельных данных
+    fillheader(header);         // Р·Р°РїРѕР»РЅРёС‚СЊ Р·Р°РіРѕР»РѕРІРєРё
+    fillpalette(palette);       // Р·Р°РїРѕР»РЅРёС‚СЊ РїР°Р»РёС‚СЂСѓ (РµСЃР»Рё РЅР°РґРѕ)
+    filldata(data, r, g, b);    // Р·Р°РїРѕР»РЅРёС‚СЊ РјР°СЃСЃРёРІ РїРёРєСЃРµР»СЊРЅС‹С… РґР°РЅРЅС‹С…
 
-    fwrite(header, 1, 54, bmpfile);             // записать заголовки
+    fwrite(header, 1, 54, bmpfile);             // Р·Р°РїРёСЃР°С‚СЊ Р·Р°РіРѕР»РѕРІРєРё
     if (!color) {       
-        fwrite(palette, 1, 4 * 256, bmpfile);   // если чб, записать палитру
+        fwrite(palette, 1, 4 * 256, bmpfile);   // РµСЃР»Рё С‡Р±, Р·Р°РїРёСЃР°С‚СЊ РїР°Р»РёС‚СЂСѓ
     }
-    fwrite(data, 1, datasize, bmpfile);         // записать пиксельные данные
+    fwrite(data, 1, datasize, bmpfile);         // Р·Р°РїРёСЃР°С‚СЊ РїРёРєСЃРµР»СЊРЅС‹Рµ РґР°РЅРЅС‹Рµ
 
     fclose(bmpfile);
 }
